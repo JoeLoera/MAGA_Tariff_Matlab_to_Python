@@ -147,9 +147,9 @@ def Balanced_Trade_IO(x, data, param, debug=False):
     # Factual trade flows
     X_ji = lambda_ji * np.tile(E_i.reshape(1, -1), (N, 1))
     eye_N = np.eye(N)
-    # MATLAB uses opposite sign convention (surplus = positive, deficit = negative)
-    D_i = X_ji.sum(axis=1) - X_ji.sum(axis=0)  # Flipped: exports - imports
-    D_i_new = X_ji_new.sum(axis=1) - X_ji_new.sum(axis=0)  # Flipped: exports - imports
+    # D_i = imports - exports = deficit (positive when imports > exports)
+    D_i = X_ji.sum(axis=0) - X_ji.sum(axis=1)  # imports - exports = deficit
+    D_i_new = X_ji_new.sum(axis=0) - X_ji_new.sum(axis=1)  # imports - exports = deficit
     
     d_welfare = 100 * (W_i_h - 1)
     d_export = 100 * (((X_ji_new * (1 - eye_N)).sum(axis=1) / Y_i_new) / 

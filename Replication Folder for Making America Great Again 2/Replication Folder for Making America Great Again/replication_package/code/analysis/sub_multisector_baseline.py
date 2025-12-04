@@ -196,9 +196,9 @@ def Balanced_Trade_EQ_MultiSector(x, data, param):
     # Factual trade flows
     X_ji = lambda_ji * beta_i * np.tile(E_i.reshape(1, -1, 1), (N, 1, K))
     eye_N = np.eye(N)
-    # MATLAB uses opposite sign convention (surplus = positive, deficit = negative)
-    D_i = X_ji.sum(axis=(1, 2)) - X_ji.sum(axis=(0, 2))  # Flipped: exports - imports
-    D_i_new = X_ji_new.sum(axis=(1, 2)) - X_ji_new.sum(axis=(0, 2))  # Flipped: exports - imports
+    # D_i = imports - exports = deficit (positive when imports > exports)
+    D_i = X_ji.sum(axis=(0, 2)) - X_ji.sum(axis=(1, 2))  # imports - exports = deficit
+    D_i_new = X_ji_new.sum(axis=(0, 2)) - X_ji_new.sum(axis=(1, 2))  # imports - exports = deficit
     
     d_welfare = 100 * (W_i_h - 1)
     # eye_N is (N, N), we need (N, N, K)

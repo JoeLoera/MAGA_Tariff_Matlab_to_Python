@@ -78,9 +78,8 @@ def Balanced_Trade_EQ(x, data, param, lump_sum=0):
     # In Python: sum(axis=0) sums along rows = imports per destination
     #           sum(axis=1) sums along columns = exports per origin
     # So: D_i = imports - exports (deficit is positive when imports > exports)
-    # MATLAB uses opposite sign convention (surplus = positive, deficit = negative)
-    D_i = X_ji.sum(axis=1) - X_ji.sum(axis=0)  # Flipped: exports - imports
-    D_i_new = X_ji_new.sum(axis=1) - X_ji_new.sum(axis=0)  # Flipped: exports - imports
+    D_i = X_ji.sum(axis=0) - X_ji.sum(axis=1)  # imports - exports = deficit
+    D_i_new = X_ji_new.sum(axis=0) - X_ji_new.sum(axis=1)  # imports - exports = deficit
     
     d_welfare = 100 * (W_i_h - 1)
     d_export = 100 * (((X_ji_new * (1 - eye_N)).sum(axis=1) / Y_i_new) / 
@@ -119,7 +118,7 @@ def main():
     id_MEX = 115
     id_CHN = 34
     id_EU = np.array([10, 13, 17, 45, 47, 50, 56, 57, 59, 61, 71, 78, 80, 83, 88, 107, 108, 109, 119, 133, 144, 145, 149, 164, 165])
-    id_RoW = np.setdiff1d(np.arange(1, N+1), np.concatenate([[id_US], id_EU]))
+    id_RoW = np.setdiff1d(np.arange(1, N+1), np.concatenate([[id_US], [id_CHN], id_EU]))
     non_US = np.setdiff1d(np.arange(1, N+1), [id_US])
     
     # GDP data
@@ -174,11 +173,11 @@ def main():
     # Baseline Analysis
     for i in range(2):
         t_ji_new = tariff[0]  # Use Reuters
-        
+
         if i == 0:
             phi = Phi[0]
         elif i == 1:
-            phi = Phi[1]
+            phi = Phi[2]  # MATLAB uses Phi{3} when i==2
         
         data = [N, E_i, Y_i, lambda_ji, t_ji_new, nu, T]
         param = [eps, kappa, psi, phi]
