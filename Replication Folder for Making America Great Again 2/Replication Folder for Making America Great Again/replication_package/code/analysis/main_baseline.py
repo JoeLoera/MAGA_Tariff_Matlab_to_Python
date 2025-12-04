@@ -73,14 +73,13 @@ def Balanced_Trade_EQ(x, data, param, lump_sum=0):
     X_ji = lambda_ji * np.tile(E_i.reshape(1, -1), (N, 1))
     eye_N = np.eye(N)
     # MATLAB: D_i = sum(X_ji,1)' - sum(X_ji,2)
-    # In MATLAB: sum(X_ji,1) sums along dimension 1 (columns) = imports per destination
-    #            sum(X_ji,2) sums along dimension 2 (rows) = exports per origin
-    # In Python: sum(axis=0) sums along rows = imports per destination
-    #           sum(axis=1) sums along columns = exports per origin
-    # So: D_i = imports - exports (deficit is positive when imports > exports)
-    # MATLAB uses opposite sign convention (surplus = positive, deficit = negative)
-    D_i = X_ji.sum(axis=1) - X_ji.sum(axis=0)  # Flipped: exports - imports
-    D_i_new = X_ji_new.sum(axis=1) - X_ji_new.sum(axis=0)  # Flipped: exports - imports
+    # In MATLAB: sum(X_ji,1) sums along dimension 1 (down columns) = imports (column sums)
+    #            sum(X_ji,2) sums along dimension 2 (across rows) = exports (row sums)
+    # In Python: sum(axis=0) sums down axis 0 (down rows, across columns) = imports (column sums)
+    #            sum(axis=1) sums across axis 1 (across columns, down rows) = exports (row sums)
+    # D_i = imports - exports (deficit is positive when imports > exports)
+    D_i = X_ji.sum(axis=0) - X_ji.sum(axis=1)  # imports - exports
+    D_i_new = X_ji_new.sum(axis=0) - X_ji_new.sum(axis=1)  # imports - exports
     
     d_welfare = 100 * (W_i_h - 1)
     d_export = 100 * (((X_ji_new * (1 - eye_N)).sum(axis=1) / Y_i_new) / 

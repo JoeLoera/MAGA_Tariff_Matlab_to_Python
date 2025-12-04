@@ -217,9 +217,11 @@ def Balanced_Trade_IO_MultiSector(x, data, param):
     # Factual trade flows
     X_ji = lambda_ji * e_i * np.tile(E_i.reshape(1, -1, 1), (N, 1, K))
     eye_N = np.eye(N)
-    # MATLAB uses opposite sign convention (surplus = positive, deficit = negative)
-    D_i = X_ji.sum(axis=(1, 2)) - X_ji.sum(axis=(0, 2))  # Flipped: exports - imports
-    D_i_new = X_ji_new.sum(axis=(1, 2)) - X_ji_new.sum(axis=(0, 2))  # Flipped: exports - imports
+    # MATLAB: D_i = sum(sum(X_ji,1),3)' - sum(sum(X_ji,2),3) = imports - exports
+    # In 3D: sum over axis=0 (origins) and axis=2 (sectors) = imports per destination
+    #        sum over axis=1 (destinations) and axis=2 (sectors) = exports per origin
+    D_i = X_ji.sum(axis=(0, 2)) - X_ji.sum(axis=(1, 2))  # imports - exports
+    D_i_new = X_ji_new.sum(axis=(0, 2)) - X_ji_new.sum(axis=(1, 2))  # imports - exports
     
     # Create mask for non-diagonal elements: reshape to (N, N, 1) then tile to (N, N, K)
     non_diag_mask = np.tile((1 - eye_N).reshape(N, N, 1), (1, 1, K))

@@ -41,7 +41,9 @@ def solveNu(X, Y, id_US):
     
     # Solve system
     def eqFun(nu):
-        E_i = Y_agg + (1 - nu) * (X_agg.sum(axis=1) - (np.outer((1 - nu), np.ones(2)) * X_agg).sum(axis=1))
+        # MATLAB: sum(X,1)' = column sums = imports (axis=0 in Python)
+        # MATLAB: sum(X,2) = row sums = exports (axis=1 in Python)
+        E_i = Y_agg + (1 - nu) * (X_agg.sum(axis=0) - (np.outer((1 - nu), np.ones(2)) * X_agg).sum(axis=1))
         
         r_11 = (E_i[0] - X_agg[1, 0]) / (E_i[0] - X_agg[1, 0] + X_agg[0, 1])
         r_22 = (E_i[1] - X_agg[0, 1]) / (E_i[1] - X_agg[0, 1] + X_agg[1, 0])
